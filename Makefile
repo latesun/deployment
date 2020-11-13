@@ -9,6 +9,7 @@ simple-web:
 	cd simple-web && docker build --no-cache -t gin-demo:0.0.1 .
 	docker-compose -f simple-web/gin-demo.yml up -d
 
+.PHONY: simple-web-3
 simple-web-3:
 	cd simple-web && docker build --no-cache -t gin-demo:0.0.1 .
 	docker-compose -f simple-web/gin-demo.yml up -d --scale gin-demo=3

@@ -5,5 +5,11 @@ services:
     image: "gin-demo:0.0.1"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.gin.rule=Host(`latesun.com`)"
-      - "traefik.http.routers.gin.entrypoints=web"
+      - "traefik.http.routers.gin-demo.rule=Host(`latesun.com`)"
+      - "traefik.http.routers.gin-demo.entrypoints=web"
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
