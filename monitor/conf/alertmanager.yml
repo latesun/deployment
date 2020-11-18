@@ -1,0 +1,18 @@
+global:
+  smtp_smarthost: "smtp.163.com:25"
+  smtp_from: "latesun_test@163.com"
+  smtp_auth_username: "latesun_test@163.com"
+  smtp_auth_password: "dianqi227"
+  smtp_require_tls: false
+
+route:
+  group_by: ["alertname"]
+  group_wait: 10s
+  group_interval: 10m
+  repeat_interval: 10m
+  receiver: live-monitoring
+
+receivers:
+  - name: "live-monitoring"
+    email_configs:
+      - to: "13509230924@139.com"
