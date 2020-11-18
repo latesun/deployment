@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  gin-demo:
+    image: "gin-demo:0.0.1"
+    restart: always
+    networks:
+      - gateway
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.gin-demo.rule=Host(`web.latesun.com`)"
+      - "traefik.http.routers.gin-demo.entrypoints=web"
+
+networks:
+  gateway:
+    external: true
