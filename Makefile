@@ -26,27 +26,18 @@ simple-web-3:
 .PHONY: redis
 redis:
 	mkdir -p $(HOME)/data/redis
-	docker-compose -f database/redis/redis.yml up -d
+	docker-compose -f db/redis/redis.yml up -d
 
 .PHONY: mysql
 mysql:
+	docker network create db
 	mkdir -p $(HOME)/data/mysql
-	docker-compose -f database/mysql/mysql.yml up -d
+	docker-compose -f db/mysql/docker-compose.yml up -d
 
-.PHONY: es
-es:
-	mkdir -p $(HOME)/data/{es,kibane}
-	docker-compose -f database/es/es.yml up -d
-stop-es:
-	docker-compose -f database/es/es.yml down
-
-.PHONY: rabbitmq
-rabbitmq:
-	mkdir -p $(HOME)/data/rabbitmq
-	docker-compose -f mq/rabbitmq/rabbitmq.yml up -d
-
-stop-rabbitmq:
-	docker-compose -f mq/rabbitmq/rabbitmq.yml down
+.PHONY: stop-mysql
+stop-mysql:
+	docker-compose -f db/mysql/docker-compose.yml down
+	docker network rm db
 
 .PHONY: monitor
 monitor:
