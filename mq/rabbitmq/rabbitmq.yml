@@ -13,4 +13,4 @@ services:
       - RABBITMQ_DEFAULT_USER=root
       - RABBITMQ_DEFAULT_PASS=root
     volumes:
-      - $HOME/data/rabbitmq:/var/lib/rabbitmq
+      - $HOME/docker/rabbitmq:/var/lib/rabbitmq

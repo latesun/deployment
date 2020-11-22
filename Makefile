@@ -1,13 +1,11 @@
 .PHONY: traefik
 traefik: traefik/docker-compose.yml
-	mkdir -p $(HOME)/data/traefik
-	docker network create gateway
+	mkdir -p $(HOME)/docker/traefik
 	docker-compose -f traefik/docker-compose.yml up -d
 
 .PHONY: stop-traefik
 stop-traefik: traefik/docker-compose.yml
 	docker-compose -f traefik/docker-compose.yml down
-	docker network rm gateway
 
 .PHONY: simple-web
 simple-web: sample-service/web/gin-demo.yml
@@ -25,19 +23,21 @@ simple-web-3:
 
 .PHONY: redis
 redis:
-	mkdir -p $(HOME)/data/redis
+	mkdir -p $(HOME)/docker/redis/data
 	docker-compose -f db/redis/redis.yml up -d
+
+.PHONY: stop-redis
+stop-redis:
+	docker-compose -f db/redis/redis.yml down
 
 .PHONY: mysql
 mysql:
-	docker network create db
-	mkdir -p $(HOME)/data/mysql
+	mkdir -p $(HOME)/docker/mysql
 	docker-compose -f db/mysql/docker-compose.yml up -d
 
 .PHONY: stop-mysql
 stop-mysql:
 	docker-compose -f db/mysql/docker-compose.yml down
-	docker network rm db
 
 .PHONY: monitor
 monitor:
@@ -48,3 +48,19 @@ monitor:
 stop-monitor:
 	docker-compose -f monitor/docker-compose.yml down
 	docker network rm monitor
+
+.PHONY: gateway
+gateway:
+	docker network create gateway
+
+.PHONY: stop-gateway
+stop-gateway:
+	docker network rm gateway
+
+.PHONY: db
+db:
+	docker network create db
+
+.PHONY: stop-db
+stop-db:
+	docker network rm db

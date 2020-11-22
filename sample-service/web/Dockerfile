@@ -1,4 +1,4 @@
-FROM golang:1.15.1
+FROM golang:1.15.5-alpine
 
 WORKDIR $GOPATH/src/github.com/latesun/gin-demo
 COPY . $GOPATH/src/github.com/latesun/gin-demo
