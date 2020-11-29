@@ -64,3 +64,12 @@ db:
 .PHONY: stop-db
 stop-db:
 	docker network rm db
+
+.PHONY: etcd
+etcd:
+	mkdir -p $(HOME)/docker/etcd
+	docker-compose -f db/etcd/docker-compose.yml up -d
+
+.PHONY: stop-etcd
+stop-etcd:
+	docker-compose -f db/etcd/docker-compose.yml down
