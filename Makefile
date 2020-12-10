@@ -1,75 +1,73 @@
-.PHONY: traefik
-traefik: traefik/docker-compose.yml
+.PHONY: \
+	traefik stop-traefik \
+	simple-web stop-simple-web \
+	simple-web-3 stop-simple-web-3 \
+	redis stop-redis \
+	mysql stop-mysql \
+	etcd stop-etcd
+
+traefik: traefik/docker-compose.yml ## 构建 Traefik 服务
 	mkdir -p $(HOME)/docker/traefik
 	docker-compose -f traefik/docker-compose.yml up -d
 
-.PHONY: stop-traefik
 stop-traefik: traefik/docker-compose.yml
 	docker-compose -f traefik/docker-compose.yml down
 
-.PHONY: simple-web
-simple-web: sample-service/web/gin-demo.yml
-	cd sample-service/web && docker build --no-cache -t gin-demo:0.0.1 .
-	docker-compose -f sample-service/web/gin-demo.yml up -d
+gateway := `docker network ls -q -f name=gateway`
+gin_demo := `docker image ls -q gin-demo:0.0.1`
+web_dir = sample-service/web
+gin_yml = $(web_dir)/gin-demo.yml
 
-.PHONY: stop-simple-web
-stop-simple-web: sample-service/web/gin-demo.yml
-	docker-compose -f sample-service/web/gin-demo.yml down
+simple-web: $(gin_yml)
+	@if [ -z $(gateway) ] ; then docker network create gateway; fi
+	@if [ -z $(gin_demo) ] ; then cd $(web_dir) && docker build --no-cache -t gin-demo:0.0.1 . ; fi
+	docker-compose -f $(gin_yml) up -d
 
-.PHONY: simple-web-3
+stop-simple-web: $(gin_yml)
+	docker-compose -f $(gin_yml) down
+
 simple-web-3:
-	cd simple-web && docker build --no-cache -t gin-demo:0.0.1 .
-	docker-compose -f simple-web/gin-demo.yml up -d --scale gin-demo=3
+	@if [ -z $(gateway) ] ; then docker network create gateway; fi
+	@if [ -z $(gin_demo) ] ; then cd $(web_dir) && docker build --no-cache -t gin-demo:0.0.1 . ; fi
+	docker-compose -f $(gin_yml) up -d --scale gin-demo=3
 
-.PHONY: redis
 redis:
 	mkdir -p $(HOME)/docker/redis/data
 	docker-compose -f db/redis/redis.yml up -d
 
-.PHONY: stop-redis
 stop-redis:
 	docker-compose -f db/redis/redis.yml down
 
-.PHONY: mysql
 mysql:
 	mkdir -p $(HOME)/docker/mysql
 	docker-compose -f db/mysql/docker-compose.yml up -d
 
-.PHONY: stop-mysql
 stop-mysql:
 	docker-compose -f db/mysql/docker-compose.yml down
 
-.PHONY: monitor
 monitor:
 	docker network create monitor
 	docker-compose -f monitor/docker-compose.yml up -d
 
-.PHONY: stop-monitor
 stop-monitor:
 	docker-compose -f monitor/docker-compose.yml down
 	docker network rm monitor
 
-.PHONY: gateway
-gateway:
-	docker network create gateway
-
-.PHONY: stop-gateway
-stop-gateway:
-	docker network rm gateway
-
-.PHONY: db
-db:
-	docker network create db
-
-.PHONY: stop-db
-stop-db:
-	docker network rm db
-
-.PHONY: etcd
-etcd:
+etcd: ## 启动 etcd
+	docker network create etcd
 	mkdir -p $(HOME)/docker/etcd
 	docker-compose -f db/etcd/docker-compose.yml up -d
 
-.PHONY: stop-etcd
-stop-etcd:
+stop-etcd: ## 关闭 etcd
 	docker-compose -f db/etcd/docker-compose.yml down
+	docker network rm etcd
+
+ci: ## 启动 Gitea
+	docker-compose -f gitea/docker-compose.yml up -d
+
+stop-ci: ## 关闭 Gitea
+	docker-compose -f gitea/docker-compose.yml down
+
+help: ## 查看帮助文档
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
+		| awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-10s\033[0m %s\n", $$1, $$2}'
