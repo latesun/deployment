@@ -7,7 +7,7 @@
 	etcd stop-etcd
 
 traefik: traefik/docker-compose.yml ## 构建 Traefik 服务
-	mkdir -p $(HOME)/docker/traefik
+	mkdir -p $(HOME)/compose/traefik
 	docker-compose -f traefik/docker-compose.yml up -d
 
 stop-traefik: traefik/docker-compose.yml
@@ -32,14 +32,14 @@ simple-web-3:
 	docker-compose -f $(gin_yml) up -d --scale gin-demo=3
 
 redis:
-	mkdir -p $(HOME)/docker/redis/data
+	mkdir -p $(HOME)/compose/redis/data
 	docker-compose -f db/redis/redis.yml up -d
 
 stop-redis:
 	docker-compose -f db/redis/redis.yml down
 
 mysql:
-	mkdir -p $(HOME)/docker/mysql
+	mkdir -p $(HOME)/compose/mysql
 	docker-compose -f db/mysql/docker-compose.yml up -d
 
 stop-mysql:
@@ -55,12 +55,21 @@ stop-monitor:
 
 etcd: ## 启动 etcd
 	docker network create etcd
-	mkdir -p $(HOME)/docker/etcd
+	mkdir -p $(HOME)/compose/etcd
 	docker-compose -f db/etcd/docker-compose.yml up -d
 
 stop-etcd: ## 关闭 etcd
 	docker-compose -f db/etcd/docker-compose.yml down
 	docker network rm etcd
+
+es: ## 启动 es
+	docker network create elastic
+	mkdir -p $(HOME)/compose/etcd
+	docker-compose -f db/es/docker-compose.yml up -d
+
+stop-es: ## 关闭 es
+	docker-compose -f db/es/docker-compose.yml down
+	docker network rm elastic
 
 ci: ## 启动 Gitea
 	docker-compose -f gitea/docker-compose.yml up -d
