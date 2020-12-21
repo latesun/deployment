@@ -23,7 +23,7 @@ services:
       - "traefik.enable=true"
       - "traefik.docker.network=gateway"
       - "traefik.http.routers.traefik-secure.entrypoints=websecure"
-      - "traefik.http.routers.traefik-secure.rule=Host(`traefik.latesun.tk`)"
+      - "traefik.http.routers.traefik-secure.rule=Host(`traefik.latesun.cn`)"
       - "traefik.http.routers.traefik-secure.middlewares=user-auth@file"
       - "traefik.http.routers.traefik-secure.service=api@internal"
 

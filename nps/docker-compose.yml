@@ -5,6 +5,21 @@ services:
     image: ffdfgdfg/nps:v0.26.9
     container_name: nps
     restart: always
-    network_mode: host
     volumes:
       - ./conf:/conf
+    # ports:
+    #   - 10080:10080
+    #   - 18080:18080
+    #   - 10443:10443
+    networks:
+      - gateway
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.nps.rule=Host(`nps.latesun.com`)"
+      - "traefik.http.routers.nps.entrypoints=web"
+
+        # 注册到 traefik 中，域名为 nps.latesun.cn
+
+networks:
+  gateway:
+    external: true

@@ -7,7 +7,6 @@
 	etcd stop-etcd
 
 traefik: traefik/docker-compose.yml ## 构建 Traefik 服务
-	mkdir -p $(HOME)/compose/traefik
 	docker-compose -f traefik/docker-compose.yml up -d
 
 stop-traefik: traefik/docker-compose.yml

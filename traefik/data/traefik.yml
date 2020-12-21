@@ -27,7 +27,7 @@ providers:
 certificatesResolvers:
   letsencrypt:
     acme:
-      email: admin@latesun.tk
+      email: admin@latesun.cn
       storage: acme.json
       keyType: EC384
       httpChallenge:
@@ -35,9 +35,12 @@ certificatesResolvers:
 
   buypass:
     acme:
-      email: admin@latesun.tk
+      email: admin@latesun.cn
       storage: acme.json
       caServer: https://api.buypass.com/acme/directory
       keyType: EC256
       httpChallenge:
         entryPoint: web
+
+log:
+  level: DEBUG

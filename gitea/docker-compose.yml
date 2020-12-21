@@ -1,0 +1,5 @@
+version: "3"
+
+services:
+  gitea-db:
+    image: mysql:8.0
